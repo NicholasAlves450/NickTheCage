@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jeopardy: Health</title>
+	<style type="text/css">
+		body {
+			margin:0 0 0 0;
+			background-color:black;
+		}
+		#main_container {
+			display:flex;
+			flex-flow: column;
+		}
+		#top > div:hover {
+			background-color:#a2c5e6;
+		}
+		@font-face {
+			font-family: 'MDGroteskRegular';
+			src: url('./MDGroteskRegular.eot');
+			src: local('MDGroteskRegular'), url('./MDGroteskRegular.woff') format('woff'), url('./MDGroteskRegular.ttf') format('truetype');
+		}
+
+			#top {
+			display:flex;
+			flex-flow: row;
+		}
+			#jeopardy_link,  #soundIcon {
+				border-bottom:2px solid black;
+				text-align:center;
+				font-size:2.3vw;
+				flex-grow:1;
+				font-family: 'MDGroteskRegular';
+				padding-bottom:0.3vw;
+				background-color:#00ff1a;
+				cursor:pointer;
+				transition:0.2s;
+			}
+			table {
+				width:100%;
+				font-family: 'MDGroteskRegular';
+				border-collapse: collapse;
+				height:40vw;
+				table-layout: fixed;
+			}
+			table th, table td {
+				border:4px solid black;
+				background-color:#0048ff;
+				color:yellow;
+				text-align:center;
+				font-size:2.3vw;
+				font-weight: bolder;
+			  	-webkit-text-fill-color: yellow; /* Will override color (regardless of order) */
+			  	-webkit-text-stroke-width: .0007vw;
+			  	-webkit-text-stroke-color: black;
+			}
+			table th {
+				cursor:default;
+			}
+			table td {
+				cursor:pointer;
+			}
+			table td:hover {
+				background-color:blue;
+			}
+			#bottom {
+				width:100%;
+				display:flex;
+				flex-flow: row;
+				flex-grow:1;
+
+			}
+			#bottom > div:not(.current_team) {
+				flex-grow:1;
+				border:2px solid blue;
+				text-align:center;
+				font-size:2vw;
+				font-family: 'MDGroteskRegular';
+				padding:1vw 0 1vw 0;
+				background-color:white;
+			}
+			#points_one, #points_two {
+				font-size:1.3vw;
+			}
+			.current_team {
+				background-color:blue;
+				flex-grow:1;
+				border:2px solid black;
+				border-style: dashed;
+				text-align:center;
+				font-size:2vw;
+				font-family: 'MDGroteskRegular';
+				padding:1vw 0 1vw 0;
+			}
+			#question_answer_node {
+				position:fixed;
+				top:0;
+				left:2vw;
+				width:95%;
+				background-color:blue;
+				height:47vw;
+				border:5px solid black;
+				margin:10px 10px 40px 10px;
+				display:none;
+				overflow-y:auto;
+				transition:.5s;
+			}
+			#question_display {
+				width:80%;
+				margin-left:auto;
+				margin-right:auto;
+				border:4px solid black;
+				border-radius:5px;
+				height:25vw;
+				font-family: 'MDGroteskRegular';
+				margin-top:8%;
+				text-align:center;
+				font-size:2.5vw;
+				background-color:#066cf9;
+			}
+			#close {
+				font-size:1.7vw;
+				color:yellow;
+				cursor:pointer;
+			}
+			#click_here_boy {
+				width:100%;
+				text-align:center;
+				color:white;
+				font-family: 'MDGroteskRegular';
+				font-size:2.5vw;
+				margin-top:1vw;
+				cursor:pointer;
+				transition:.3s;
+			}
+			#click_here_boy:hover {
+				border-top:2px solid white;
+				border-bottom:2px solid white;
+			}
+			#question_node {
+				color:yellow;
+				font-size:3vw;
+				padding:1vw 1vw 1vw 1vw;
+			}
+			#answer_display {
+				color:yellow;
+				font-family: 'MDGroteskRegular';
+				font-size:4vw;
+				width:100%;
+				text-align:center;
+				margin-top:10vw;
+			}
+			#correct_check {
+				font-size:3vw;
+				font-family: 'MDGroteskRegular';
+				width:100%;
+				margin-top:4vw;
+				text-align:center;
+				background-color:white;
+				display:none;
+			}
+			#correct {
+				padding:0 1vw 0 1vw;
+				color:green;
+				cursor:pointer;
+			}
+			#incorrect {
+				padding:0 1vw 0 1vw;
+				color:red;
+				cursor:pointer;
+			}
+			#correct:hover, #incorrect:hover {
+				border:4px solid black;
+			}
+			#win {
+				position:fixed;
+				width:100%;
+				top:0;
+				bottom:0;
+				background-color:black;
+				font-family: 'MDGroteskRegular';
+				display:none;
+				color:white;
+				font-size:6vw;
+				text-align:center;
+				padding-top:15vw;
+			}
+	</style>
+</head>
+<body>
+	<audio controls id="audio" hidden>
+	  <source src="africa.ogg" type="audio/ogg">
+	  <source src="africa.mp3" type="audio/mpeg">
+	</audio>
+	<div id="main_container">
+		<div id="top">
+			<div id="jeopardy_link">
+				Jeopardy
+			</div>
+			<div id="soundIcon" onclick="toggle_audio_icon()">
+				Music: Off
+			</div>
+		</div>
+		<div id="center">
+			<table id="options_all">
+				<tr id="top_row">
+					<th>Prevention</th>
+					<th>STD's</th>
+					<th>Drugs</th>
+					<th>Mental Health</th>
+					<th>Your Body</th>
+				</tr>
+				<tr>
+					<td id="question1" value="0" onclick="openNode(this);">$100</td>
+					<td id="question2" value="1" onclick="openNode(this);">$100</td>
+					<td id="question3" value="2" onclick="openNode(this);">$100</td>
+					<td id="question4" value="3" onclick="openNode(this);">$100</td>
+					<td id="question5" value="4" onclick="openNode(this);">$100</td>
+				</tr>
+				<tr>
+					<td id="question6" value="5" onclick="openNode(this);">$200</td>
+					<td id="question7" value="6" onclick="openNode(this);">$200</td>
+					<td id="question8" value="7" onclick="openNode(this);">$200</td>
+					<td id="question9" value="8" onclick="openNode(this);">$200</td>
+					<td id="question10" value="9" onclick="openNode(this);">$200</td>
+				</tr>
+				<tr>
+					<td id="question11" value="10" onclick="openNode(this);">$300</td>
+					<td id="question12" value="11" onclick="openNode(this);">$300</td>
+					<td id="question13" value="12" onclick="openNode(this);">$300</td>
+					<td id="question14" value="13" onclick="openNode(this);">$300</td>
+					<td id="question15" value="14" onclick="openNode(this);">$300</td>
+				</tr>
+				<tr>
+					<td id="question16" value="15" onclick="openNode(this);">$400</td>
+					<td id="question17" value="16" onclick="openNode(this);">$400</td>
+					<td id="question18" value="17" onclick="openNode(this);">$400</td>
+					<td id="question19" value="18" onclick="openNode(this);">$400</td>
+					<td id="question20" value="19" onclick="openNode(this);">$400</td>
+				</tr>
+				<tr>
+					<td id="question21" value="20" onclick="openNode(this);">$500</td>
+					<td id="question22" value="21" onclick="openNode(this);">$500</td>
+					<td id="question23" value="22" onclick="openNode(this);">$500</td>
+					<td id="question24" value="23" onclick="openNode(this);">$500</td>
+					<td id="question25" value="24" onclick="openNode(this);">$500</td>
+				</tr>
+			</table>
+		</div>
+		<div id="bottom">
+			<div id="team_one" class="current_team">
+				Team One
+				<div id="points_one">
+					$0
+				</div>
+			</div>
+			<div id="team_two">
+				Team Two
+				<div id="points_two">
+					$0
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="question_answer_node">
+		<div id="close" onclick="closeNode();">
+			CLOSE
+		</div>
+		<div id="question_display">
+			Question: 
+			<div id="question_node">
+				
+			</div>
+		</div>
+		<div id="click_here_boy" onclick="showAnswer()">
+			Click here for the answer
+		</div>
+		<div id="answer_display">
+			
+		</div>
+		<div id="correct_check"> 
+			<span id="correct" onclick="change_score(this)" value="correct">Correct?</span><span id="incorrect" onclick="change_score(this)" value="incorrect">Incorrect?</span>
+		</div>
+	</div>
+	<div id="win">
+		
+	</div>
+	<script type="text/javascript">
+		var current_team = "one";
+
+		var team1_points = 0;
+		var team2_points = 0;
+
+		var current_question;var current_answer;
+
+		var team_one_element = document.getElementById("team_one");
+		var team_two_element = document.getElementById("team_two");
+
+		var team_one_points = document.getElementById("points_one");
+		var team_two_points = document.getElementById("points_two");
+
+		var healthy_double = document.getElementById("question11");
+
+		var qANode = document.getElementById("question_answer_node");
+
+		var window_state = false;
+
+		var already_selected = [];
+
+		var question_answer_list = [
+			[" A thin, fitted tube that a man wears over his penis during sex", "Condom", 100],
+			["No initial symptoms, affects the human immune system","AIDS/HIV", 100],
+			["When it takes more of the drug to feel the same effect", "Tolerance", 100],
+			["Disorder triggered by witnessing or experiencing a terrifying event, common in war veterans.", "Post-traumatic Stress Disorder", 100],
+			["Major sex organ, where the fetus develops during gestation", "Uterus", 100],
+			["100% effective way to avoid pregnancy or STDs", "Abstinence", 200],
+			["Two fluids that can transmit STD's", "Vaginal fluids, Semen, Blood, Breast Milk", 200],
+			["Stimulant recognizable in a white powder form", "Cocaine", 200],
+			["Meaning of OCD", "Obsessive Compulsive Disorder", 200],
+			["Between the Vas Deferens and Prostate, injects fluid during ejaculation", "Seminal Vesicle", 200],
+			["Meaning of IUD", "Intrauterine Device", 300],
+			["STD that mainly attacks the Liver", "Hepatitis B", 300],
+			["Most commonly used drug on America", "Marijuana", 300],
+			["Eating disorder where the person avoids weight gain", "Bulimia", 300],
+			["Visual processing center / lobe for the brain", "Occipital lobe", 300],
+			["'Permanent' sterilization procedure for men", "Vasectomy", 400],
+			["Symptoms include warts on genitals and surrounding areas", "HPV / Human papillomavirus infection", 400],
+			["Known as acid, is a hallucinogen", "LSD / Lysergic acid diethylamide", 400],
+			["Disease that causes memory loss over time", "Alzheimer's disease", 400],
+			["Known as the love hormone, released during birth, etc", "Oxytocin", 400],
+			["Permition for something to happen", "Consent", 500],
+			["Famous American Athlete who got HIV", "Magic Johnson", 500],
+			["Very famous psychoactive drug, used in drinks", "Alcohol", 500],
+			["Persistent feeling of sadness, loss of interest over things", "Depression", 500],
+			["Hormone produced by the ovaries, adrenal glands, and placenta", "Progesterone", 500],
+		]
+		var x_extra;
+		var x_element;
+		function openNode(x) {
+			if (window_state == false && already_selected.includes(x.getAttribute('value')) != true) {
+				x_extra = x.getAttribute('value');
+				window_state = true;
+				x_element = x;
+				qANode.style.display = "block";
+
+				current_question = question_answer_list[x.getAttribute('value')][0];
+				current_answer = question_answer_list[x.getAttribute('value')][1];
+				document.getElementById("question_node").innerHTML = current_question;
+			}
+		}
+		function closeNode() {
+			qANode.style.display = "none";
+			current_question = null;
+			current_answer = null;
+			window_state = false;
+			if (already_selected.length >= 25) {
+				end_game();
+			}
+		}
+		function change_score(y) {
+			if (y.getAttribute('value') === "correct") {
+				if (current_team === "one") {
+					team1_points += question_answer_list[x_extra][2];
+					current_team = "two";
+					team_one_element.classList.remove("current_team");
+					team_two_element.classList.add("current_team");
+					closeNode();
+				} else if (current_team === "two") {
+					team2_points += question_answer_list[x_extra][2];
+					current_team = "one";
+					team_one_element.classList.add("current_team");
+					team_two_element.classList.remove("current_team");
+					closeNode()
+				}
+			} else if (y.getAttribute('value') === "incorrect") {
+				if (current_team === "one") {
+					team1_points -= question_answer_list[x_extra][2];
+					current_team = "two";
+					team_one_element.classList.remove("current_team");
+					team_two_element.classList.add("current_team");
+					closeNode();
+				} else if (current_team === "two") {
+					team2_points -= question_answer_list[x_extra][2];
+					current_team = "one";
+					team_one_element.classList.add("current_team");
+					team_two_element.classList.remove("current_team");
+					closeNode();
+				}
+			}
+			x_extra = " ";
+			x_element = " ";
+			team_one_points.innerHTML = "$" + team1_points;
+			team_two_points.innerHTML = "$" + team2_points;
+			document.getElementById("correct_check").style.display = "none";
+			document.getElementById("question_display").style.display = "block";
+			document.getElementById("answer_display").innerHTML = " ";
+			document.getElementById("click_here_boy").style.display = "block";
+			document.getElementById("close").style.display = "block";
+			var window_state = false;
+		}
+		function showAnswer() {
+			already_selected.push(x_extra);
+			x_element.innerHTML = " ";
+			document.getElementById("correct_check").style.display = "block";
+			document.getElementById("question_display").style.display = "none";
+			document.getElementById("answer_display").innerHTML = question_answer_list[x_extra][1];
+			document.getElementById("click_here_boy").style.display = "none";
+			document.getElementById("close").style.display = "none";
+
+		}
+		function end_game() {
+			document.getElementById("win").style.display = "block";
+			if (team1_points > team2_points) {
+				document.getElementById("win").innerHTML = "TEAM ONE WINS! " + "$" + team1_points
+			} else if (team2_points > team1_points) {
+				document.getElementById("win").innerHTML = "TEAM TWO WINS! " + "$" + team2_points
+			} else if (team1_points === team2_points) {
+				document.getElementById("win").innerHTML = "DRAW :/"
+			}
+		}
+
+
+
+		var music = false;
+		var audio = document.getElementById("audio");
+		audio.pause();
+		function toggle_audio_icon (x) {
+			var imageDiv = document.getElementById("soundIcon");
+			if (music == true || x == true) {
+				music = false;
+				document.getElementById("soundIcon").innerHTML = "Music: Off";
+				audio.pause();
+			} else if (music == false) {
+				music = true;
+				document.getElementById("soundIcon").innerHTML = "Music: On";
+				audio.play();
+			}
+		}
+		var current_audio_time;var audio_duration;
+		function check_audio_time () {
+			current_audio_time = Math.round(audio.currentTime);
+			audio_duration = Math.round(audio.duration);
+			if (current_audio_time >= audio_duration) {
+				audio.currentTime = 0;
+				toggle_audio_icon(changeIconV);
+			}
+		}
+			window.setInterval(check_audio_time, 2000);
+	</script>
+</body>
+</html>
